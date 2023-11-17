@@ -33,6 +33,11 @@ class MemoryGame {
   }
 
   checkIfFinished() {
-   return 
+   if(this.pairsGuessed === 12){
+    return true;
+   }
+   else{
+    return false;
+   }
   }
 }
