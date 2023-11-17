@@ -27,25 +27,49 @@ const cards = [
 
 const memoryGame = new MemoryGame(cards);
 
-window.addEventListener('load', (event) => {
-  let html = '';
+window.addEventListener("load", (event) => {
+  let html = "";
   memoryGame.cards.forEach((pic) => {
     html += `
-      <div class="card" data-card-name="${pic.name}">
-        <div class="back" name="${pic.img}"></div>
-        <div class="front" style="background: url(img/${pic.img}) no-repeat"></div>
-      </div>
-    `;
+        <div class="card" data-card-name="${pic.name}">
+          <div class="back" name="${pic.img}"></div>
+          <div class="front" style="background: url(img/${pic.img}) no-repeat"></div>
+        </div>
+      `;
   });
 
   // Add all the divs to the HTML
-  document.querySelector('#memory-board').innerHTML = html;
+  document.querySelector("#memory-board").innerHTML = html;
 
   // Bind the click event of each element to a function
-  document.querySelectorAll('.card').forEach((card) => {
-    card.addEventListener('click', () => {
-      // TODO: write some code here
-      console.log(`Card clicked: ${card}`);
+  document.querySelectorAll(".card").forEach((card) => {
+    card.addEventListener("click", () => {
+      if (memoryGame.pickedCards.length < 2) {
+        card.classList.toggle("turned");
+        memoryGame.pickedCards.push(card);
+
+        if (memoryGame.pickedCards.length === 2) {
+          if (
+            memoryGame.checkIfPair(
+              memoryGame.pickedCards[0].getAttribute("data-card-name"),
+              memoryGame.pickedCards[1].getAttribute("data-card-name")
+            )
+          ) {
+            memoryGame.pickedCards[0].classList.toggle("blocked");
+            memoryGame.pickedCards[1].classList.toggle("blocked");
+            memoryGame.pickedCards = [];
+            if (memoryGame.checkIfFinished()) {
+              alert("YOU WIN!");
+            }
+          } else {
+            setTimeout(() => {
+              memoryGame.pickedCards[0].classList.toggle("turned");
+              memoryGame.pickedCards[1].classList.toggle("turned");
+              memoryGame.pickedCards = [];
+            }, 1000);
+          }
+        }
+      }
     });
   });
 });
